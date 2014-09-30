@@ -10,7 +10,8 @@
   "dependencies": {
     "express": "~4.9.x",
     "forever": "0.11.1",
-    "goodscloud": ""
+    "goodscloud": "",
+    "underscore": "1.7.0"
   },
   "engines": {
     "node": "0.10.x"
