@@ -4,6 +4,10 @@ var app = express();
 var gclib = require('goodscloud');
 var config = require('./config');
 
+var winston = require('winston');
+require('winston-papertrail').Papertrail;
+
+
 var gc = new gclib(process.env.GC_HOST || 'http://sandbox.goodscloud.com');
 
 app.set('port', (process.env.PORT || 5000));
@@ -41,3 +45,17 @@ app.get('/', function (request, response) {
 app.listen(app.get('port'), function () {
   console.log("Node app is running at localhost:" + app.get('port'))
 });
+
+//Logging to papertrail
+if (config.papertrail.host && config.papertrail.port) {
+  var logger = new (winston.Logger)({
+      transports: [
+        new (winston.transports.Papertrail)({
+          host: config.papertrail.host,
+          port: config.papertrail.port
+        })
+      ]
+    });
+
+  logger.info("Logging to Papertrail.")
+}

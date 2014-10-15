@@ -11,7 +11,9 @@
     "express": "~4.9.x",
     "forever": "0.11.1",
     "goodscloud": "",
-    "underscore": "1.7.0"
+    "underscore": "1.7.0",
+    "winston": "",
+    "winston-papertrail": ""
   },
   "engines": {
     "node": "0.10.x"
