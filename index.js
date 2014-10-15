@@ -2,6 +2,7 @@ var _ = require('underscore');
 var express = require('express');
 var app = express();
 var gclib = require('goodscloud');
+var config = require('./config');
 
 var gc = new gclib(process.env.GC_HOST || 'http://sandbox.goodscloud.com');
 
