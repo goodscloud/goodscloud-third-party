@@ -12,6 +12,9 @@
     "cron": "~1.0.5",
     "foreman": "1.0.0",
     "goodscloud": "0.0.1"
+    "underscore": "1.7.0",
+    "winston": "",
+    "winston-papertrail": ""
   },
   "engines": {
     "node": "0.10.x"
