@@ -4,13 +4,14 @@
   "description": "XXX",
   "main": "index.js",
   "scripts": {
-    "start": "forever --plain -a -l forever.log -o out.log -e err.log start index.js",
-    "stop": "forever --plain stop index.js || true"
+    "start": "nf start",
+    "stop": "nf stop"
   },
   "dependencies": {
     "express": "~4.9.x",
-    "forever": "0.11.1",
-    "goodscloud": ""
+    "cron": "~1.0.5",
+    "foreman": "1.0.0",
+    "goodscloud": "0.0.1"
   },
   "engines": {
     "node": "0.10.x"
