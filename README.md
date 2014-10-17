@@ -9,10 +9,7 @@ Installation
 
     npm install
 
-3. Set the credentials of your GoodsCloud-API user as environment variables:
-
-    export GC_USERNAME=username
-    export GC_PASSWORD=password
+3. Set the credentials of your GoodsCloud-API user in ``config.js``
 
 4. Run the app:
 
@@ -32,6 +29,6 @@ In case you do not have centralized logging set up, we recommend [papertrail](ht
 2. Go to [Account -> Destinations](https://papertrailapp.com/account/destinations), click "Create log destination"
 3. The standard settings are fine, so continue via "Create"
 4. Note down the hostname and port of your logging destination
-5. Open `config.js` and edit `config.papertrail.host` and `config.papertrail.port` accordingly
+5. Open `config.js` and edit `config.papertrailHost` and `config.papertrailPort` accordingly
 6. Run the app
 7. Check that logging messages show up on https://papertrailapp.com/events

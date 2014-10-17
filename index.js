@@ -8,9 +8,9 @@ var winston = require('winston');
 require('winston-papertrail').Papertrail;
 
 
-var gc = new gclib(process.env.GC_HOST || 'http://sandbox.goodscloud.com');
+var gc = new gclib(config.goodscloudHost);
 
-app.set('port', (process.env.PORT || 5000));
+app.set('port', config.goodscloudPort);
 app.use(express.static(__dirname + '/public'));
 
 function getDate(hours_before) {
@@ -22,8 +22,8 @@ app.get('/', function (request, response) {
 
   var username, password, date, num_results, result;
 
-  username = process.env.GC_USERNAME;
-  password = process.env.GC_PASSWORD;
+  username = config.goodscloudUsername;
+  password = config.goodscloudPassword;
   date = getDate(24);
 
   gc.login(username, password, function() {
