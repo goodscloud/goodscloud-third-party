@@ -4,11 +4,7 @@ var express = require('express');
 var app = express();
 var http = require(config.listenProtocol);
 var gclib = require('goodscloud');
-var logger;
-
-var winston = require('winston');
-require('winston-papertrail').Papertrail;
-
+var logger = require('./logger');
 
 var gc = new gclib(config.goodscloudHost);
 
@@ -49,35 +45,18 @@ app.get('/status', function (request, response) {
 
 
 function setup_server() {
+  var server;
   function init_complete() {
-    logger.log("Node app is running at localhost:" + app.get('port'))
+    logger.log("Node app is running at %j", server.address())
   }
   if (config.listenProtocol == 'http') {
-    http.createServer(app).listen(config.listenPort || 8080, init_complete);
+    server = http.createServer(app).listen(config.listenPort || 8080, init_complete);
   } else {
-    http.createServer({
+    server = http.createServer({
       key: config.sslKey,
       cert: config.sslCert,
     }, app).listen(config.listenPort || 8443, init_complete);
   }
 }
 
-function setup_logging() {
-  // Logging to papertrail
-  if (config.papertrailHost && config.papertrailPort) {
-    logger = new (winston.Logger)({
-        transports: [
-          new (winston.transports.Papertrail)({
-            host: config.papertrailHost,
-            port: config.papertrailPort
-          })
-        ]
-    });
-    logger.info("Logging to Papertrail.")
-  } else {
-    logger = console;
-  }
-}
-
-setup_logging();
 setup_server();
