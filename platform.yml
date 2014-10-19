@@ -1,0 +1,9 @@
+---
+runtime: nodejs
+allow:
+  # networks that have access to this host
+  # format: <Network>/<Prefix>
+  # examples:
+  # 172.27.1.23/32 - single host
+  # 172.27.0.0/24 - subnet with 255 IPs
+  - 192.168.0.0/24  # allow access from 192.168.0.* for testing
