@@ -1,8 +1,9 @@
 var _ = require('underscore');
+var config = require('./config');
 var express = require('express');
 var app = express();
+var http = require(config.listenProtocol);
 var gclib = require('goodscloud');
-var config = require('./config');
 var logger;
 
 var winston = require('winston');
@@ -11,7 +12,6 @@ require('winston-papertrail').Papertrail;
 
 var gc = new gclib(config.goodscloudHost);
 
-app.set('port', config.goodscloudPort);
 app.use(express.static(__dirname + '/public'));
 
 function getDate(hours_before) {
@@ -43,10 +43,24 @@ app.get('/', function (request, response) {
   });
 });
 
-app.listen(app.get('port'), function () {
-  logger.log("Node app is running at localhost:" + app.get('port'))
+app.get('/status', function (request, response) {
+  response.send('alive');
 });
 
+
+function setup_server() {
+  function init_complete() {
+    logger.log("Node app is running at localhost:" + app.get('port'))
+  }
+  if (config.listenProtocol == 'http') {
+    http.createServer(app).listen(config.listenPort || 8080, init_complete);
+  } else {
+    http.createServer({
+      key: config.sslKey,
+      cert: config.sslCert,
+    }, app).listen(config.listenPort || 8443, init_complete);
+  }
+}
 
 function setup_logging() {
   // Logging to papertrail
@@ -65,4 +79,5 @@ function setup_logging() {
   }
 }
 
-setup_logging()
+setup_logging();
+setup_server();
