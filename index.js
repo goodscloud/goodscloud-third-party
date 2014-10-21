@@ -1,16 +1,13 @@
 var _ = require('underscore');
+var config = require('./config');
 var express = require('express');
 var app = express();
+var http = require(config.listenProtocol);
 var gclib = require('goodscloud');
-var config = require('./config');
+var logger = require('./logger');
 
-var winston = require('winston');
-require('winston-papertrail').Papertrail;
+var gc = new gclib(config.goodscloudHost);
 
-
-var gc = new gclib(process.env.GC_HOST || 'http://sandbox.goodscloud.com');
-
-app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 
 function getDate(hours_before) {
@@ -22,8 +19,8 @@ app.get('/', function (request, response) {
 
   var username, password, date, num_results, result;
 
-  username = process.env.GC_USERNAME;
-  password = process.env.GC_PASSWORD;
+  username = config.goodscloudUsername;
+  password = config.goodscloudPassword;
   date = getDate(24);
 
   gc.login(username, password, function() {
@@ -42,20 +39,24 @@ app.get('/', function (request, response) {
   });
 });
 
-app.listen(app.get('port'), function () {
-  console.log("Node app is running at localhost:" + app.get('port'))
+app.get('/status', function (request, response) {
+  response.send('alive');
 });
 
-//Logging to papertrail
-if (config.papertrail.host && config.papertrail.port) {
-  var logger = new (winston.Logger)({
-      transports: [
-        new (winston.transports.Papertrail)({
-          host: config.papertrail.host,
-          port: config.papertrail.port
-        })
-      ]
-    });
 
-  logger.info("Logging to Papertrail.")
+function setup_server() {
+  var server;
+  function init_complete() {
+    logger.log("Node app is running at %j", server.address())
+  }
+  if (config.listenProtocol == 'http') {
+    server = http.createServer(app).listen(config.listenPort || 8080, init_complete);
+  } else {
+    server = http.createServer({
+      key: config.sslKey,
+      cert: config.sslCert,
+    }, app).listen(config.listenPort || 8443, init_complete);
+  }
 }
+
+setup_server();

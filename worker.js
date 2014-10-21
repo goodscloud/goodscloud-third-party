@@ -1,9 +1,10 @@
 var cron = require('cron');
+var config = require('./config');
+var logger = require('./logger');
 
 var job = new cron.CronJob('42 * * * * *', function () {
-  var username = process.env.GC_USERNAME || 'friend';
-
-  console.log('Hello, ' + username + '! This job will run every minute!');
+  var username = config.goodscloudUsername;
+  logger.log('Hello, ' + username + '! This job will run every minute!');
 });
 
 job.start();
