@@ -9,10 +9,13 @@ var config = {
     /*sslKey: require('fs').readFileSync('key.pem'),
     sslCert: require('fs').readFileSync('cert.pem'),*/
     /* Host & Credentials for accessing the GoodsCloud API */
-    goodscloudHost: 'http://sandbox.goodscloud.com',
+    goodscloudHost: 'http://localhost:5000',
     goodscloudPort: 80,
-    goodscloudUsername: '',
-    goodscloudPassword: 'secret',
+    goodscloudUsername: 'user0@example.org',
+    goodscloudPassword: 'geheim',
+    /* GoodsCloud channels (numeric IDs) for which we want to receive
+     * notifications; empty list selects all available channels */
+    goodscloudChannels: [],
     /* Syslog target */
     papertrailHost: undefined,
     papertrailPort: undefined,
