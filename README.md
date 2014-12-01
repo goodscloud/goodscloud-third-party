@@ -1,7 +1,7 @@
 Installation
 ============
 
-1. Clone this app skeleton and copy it to a working directory for your client bridge:
+1. Clone this app template and copy it to a working directory for your client bridge:
 
         git clone git@github.com:goodscloud/goodscloud-third-party.git
 
@@ -15,7 +15,9 @@ Installation
 
         npm start
 
-   This will run the web app and worker script that runs periodic jobs.
+   This will run the web app, a worker script that runs periodic jobs, and
+   connect to the API notification service. Edit ``run.js`` to disable one
+   or more of these processes.
 
 
 Logging
@@ -39,7 +41,16 @@ In case you do not have centralized logging set up, we recommend [papertrail](ht
 Scheduled & periodic jobs
 =========================
 
-App template provides a sample file implementing a periodic task in `worker.js`.
+The App template provides a sample file implementing a periodic task in `worker.js`.
 The provided example code is using the nodejs [cron](https://github.com/ncb000gt/node-cron) library, but the choice of library is up to you.
 
 During development run scheduled & periodic jobs using the `npm start` command.
+
+
+Notification Events
+===================
+
+Use the ``goodscloudChannels`` config variable to specify a list of GoodsCloud Channels
+for which you want to receive notifications.
+The ``add_event`` function in ``logic.js`` contains an example that issues a log
+statement whenever a Preview Email was sent through the GoodsCloud UI.

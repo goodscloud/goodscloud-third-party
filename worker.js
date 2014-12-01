@@ -1,10 +1,14 @@
+/*
+ * Cron Job Management
+ */
+
 var cron = require('cron');
-var config = require('./config');
 var logger = require('./logger');
+var logic = require('./logic');
 
 var job = new cron.CronJob('42 * * * * *', function () {
-  var username = config.goodscloudUsername;
-  logger.log('Hello, ' + username + '! This job will run every minute!');
+  logger.log('This job runs at 42 seconds after every full minute.');
+  logic.sync_channels();
 });
 
-job.start();
+module.exports = job.start.bind(job);

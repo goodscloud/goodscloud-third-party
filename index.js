@@ -1,48 +1,46 @@
+/*
+ * Provides a basic HTTP interface
+ */
+
 var _ = require('underscore');
 var config = require('./config');
 var express = require('express');
 var app = express();
 var http = require(config.listenProtocol);
-var gclib = require('goodscloud');
 var logger = require('./logger');
+var logic = require('./logic');
 
-var gc = new gclib(config.goodscloudHost);
 
-app.use(express.static(__dirname + '/public'));
+app.use('/', express.static(__dirname + '/static'));
 
-function getDate(hours_before) {
-  var current_date = new Date();
-  return new Date(current_date.setHours(current_date.getHours() - hours_before));
-}
-
-app.get('/', function (request, response) {
-
-  var username, password, date, num_results, result;
-
-  username = config.goodscloudUsername;
-  password = config.goodscloudPassword;
-  date = getDate(24);
-
-  gc.login(username, password, function() {
-    gc.get('/api/internal/order', {q: {filters: [
-      {name: 'placed', op: '>=', val: date.toISOString()}
-    ]}}, function (data) {
-      num_results = data['num_results'];
-      if (num_results != 0) {
-        result = num_results + ' new orders since ' + date + ': ' +
-          _.pluck(data['objects'], 'external_identifier').join(', ');
-      } else {
-        result = 'No new results since ' + date + '.';
-      }
-      response.send(result);
-    });
+app.get('/orders', function (request, response) {
+  logic.get_new_orders(function(data) {
+    var num_results, result;
+    num_results = data['num_results'];
+    if (num_results != 0) {
+      result = num_results + ' new orders since ' + date + ': ' +
+        _.pluck(data['objects'], 'external_identifier').join(', ');
+    } else {
+      result = 'No new results since ' + date + '.';
+    }
+    response.send(result);
   });
 });
 
 app.get('/status', function (request, response) {
-  response.send('alive');
+  response.send(logic.status());
 });
 
+app.get('/events', function (request, response) {
+  response.send(logic.list_events().map(JSON.stringify).reverse().join("<hr>"));
+});
+
+app.get('/channels', function (request, response) {
+  response.send(logic.list_channels().
+    map(function(ch) { return "<li>" + ch.id + " " + ch.label + "</li>";}).
+    join("")
+  );
+});
 
 function setup_server() {
   var server;
@@ -59,4 +57,4 @@ function setup_server() {
   }
 }
 
-setup_server();
+module.exports = setup_server;
